@@ -10,12 +10,13 @@ baker.get('/data/seed', (req, res) => {
 })
 
 // index
-baker.get('/', (req, res) => {
-    Baker.find()
-    .populate('breads')
-    .then(foundBakers => {
+baker.get('/', async (req, res) => {
+    try {
+        const foundBakers = await Baker.find().populate('breads')
         res.send(foundBakers)
-    })
+    } catch(error) {
+        res.status(500).send({ error: 'Server error' })
+    }
 })
 
 // show
@@ -33,11 +34,13 @@ baker.get('/:id', (req, res) => {
 })
 
 // delete
-baker.delete('/:id', (req, res) => {
-    Baker.findByIdAndDelete(req.params.id)
-    .then(deletedBaker => {
+baker.delete('/:id', async (req, res) => {
+    try {
+        const deletedBaker = await Baker.findByIdAndDelete(req.params.id)
         res.status(303).redirect('/breads')
-    })
+    } catch (error) {
+        res.status(500).send({ error: 'Server error'})
+    }
 })
 
 // export
